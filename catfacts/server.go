@@ -32,8 +32,8 @@ func NewClient(baseURL string, userAgent string) *Client {
 	return &c
 }
 
-func (c *Client) newRequest(method, path string, body interface{}) (*http.Request, error) {
-	rel := &url.URL{Path: path}
+func (c *Client) newRequest(method, path string, queryValues url.Values, body interface{}) (*http.Request, error) {
+	rel := &url.URL{Path: path, RawQuery: queryValues.Encode()}
 	u := c.BaseURL.ResolveReference(rel)
 	var buf io.ReadWriter
 	if body != nil {

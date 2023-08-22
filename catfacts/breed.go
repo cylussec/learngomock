@@ -1,7 +1,9 @@
 package catfacts
 
+import "net/url"
+
 func (c *Client) ListCatBreeds() (Breeds, error) {
-	req, err := c.newRequest("GET", "/breeds", nil)
+	req, err := c.newRequest("GET", "/breeds", url.Values{}, nil)
 	if err != nil {
 		return Breeds{}, err
 	}

@@ -7,13 +7,16 @@ import (
 
 // Main function that we call from the command line
 func main() {
-	s := catfacts.NewClient("https://catfact.ninja/", "Mozilla/5.0")
+	c := catfacts.NewClient(
+		"https://catfact.ninja/",
+		"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+	)
 
-	fact, err := s.ListCatFact()
+	fact, err := c.ListCatFact()
 	CheckError(err)
 	log.Print(fact.String())
 
-	facts, err := s.GetNumberOfCatFacts(103)
+	facts, err := catfacts.GetNumberOfCatFacts(c, 103)
 	CheckError(err)
 	log.Print((*facts)[0].String())
 

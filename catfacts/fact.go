@@ -1,11 +1,14 @@
 package catfacts
 
-import "fmt"
+import (
+	"net/url"
+	"strconv"
+)
 
 // Will get a single, random Cat Fact(r) from catfacts.ninja
 // Returns a single CatFact type, as well as an error if the API returns an error
 func (c *Client) ListCatFact() (CatFact, error) {
-	req, err := c.newRequest("GET", "/fact", nil)
+	req, err := c.newRequest("GET", "/fact", url.Values{}, nil)
 	if err != nil {
 		return CatFact{}, err
 	}
@@ -14,20 +17,22 @@ func (c *Client) ListCatFact() (CatFact, error) {
 	return cf, err
 }
 
-func (c *Client) ListCatFacts(page int) (CatFacts, error) {
-	url := fmt.Sprintf("/facts?page=%d", page)
-	req, err := c.newRequest("GET", url, nil)
+func (c *Client) ListCatFacts(page int) (*CatFacts, error) {
+	queryValues := url.Values{}
+	queryValues.Add("page", strconv.Itoa(page))
+
+	req, err := c.newRequest("GET", "/facts", queryValues, nil)
 	if err != nil {
-		return CatFacts{}, err
+		return &CatFacts{}, err
 	}
 	var cf CatFacts
 	_, err = c.do(req, &cf)
-	return cf, err
+	return &cf, err
 }
 
 // Gets a specific number of cat facts, specified by the argument num
 // Returns a pointer to a slice of Cat Facts of the specified number
-func (c *Client) GetNumberOfCatFacts(num int) (*[]CatFact, error) {
+func GetNumberOfCatFacts(c ClientInterface, num int) (*[]CatFact, error) {
 	page := 1
 	var cf []CatFact
 	for {
